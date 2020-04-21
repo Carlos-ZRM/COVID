@@ -1,0 +1,12 @@
+{% extends "base_template.html" %}
+{% block title %}Configuracion inicial{% endblock %}
+{% block content %}
+    <form action="" method="post">
+        
+        <label for="numDatos"> Datos muestra  </label>
+        <input type='number' max='50' id="numDatos" name="numDatos" /><br>
+                
+        <input type="submit" id="calcular" name="calcular" value="calcular" />
+    </form>
+
+    {% endblock %}

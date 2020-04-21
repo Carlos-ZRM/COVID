@@ -10,6 +10,8 @@ class interpolacion :
         self.datos = []
         self.datos_inter = []
         dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Confirmados.csv')
+        dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Defunciones.csv')
+    
         print(dataframe.head(10))
         ser = dataframe.iloc[0]
         self.datos = ser.values.tolist()[3:]
@@ -52,16 +54,17 @@ class interpolacion :
             
             x = x +1
 
-    def get_interpolacion_lagrange(self):
-        datosMuestra = 40
-        datosTotales = len(self.datos) + 20
-        x0 = datosMuestra // 4
+    def get_interpolacion_lagrange(self, datosMuestra):
+        #datosMuestra = 12
+        datosTotales = len(self.datos) + 25
+        x0 = 1*datosMuestra // 3
         #x0 = datosMuestra - 3
-        x1 = x0*2
+        x1 = 2*datosMuestra // 3
         #x1 =  datosMuestra - 2
         #x2 =  datosMuestra - 1
-        x2 = x0*3
+        x2 = 3*datosMuestra // 3
         # x es el tercer punto 3//3
+        x2 = x2-1
         x = datosMuestra 
         # agrega los primeros elementos
         self.datos_inter = self.datos[:datosMuestra]
@@ -87,10 +90,10 @@ class interpolacion :
             x1 = x1 +1 
             x2 = x2 +1 
    
-        
+        return self.datos_inter
     def get_interpolacion_lineal(self):
         datosMuestra = 53
-        datosTotales = len(self.datos)+50
+        datosTotales = len(self.datos)+25
         x0 = datosMuestra //3
         x0 = datosMuestra - 32
         x1 = x0*2
@@ -137,7 +140,7 @@ class interpolacion :
             return None
     def plot(self):
 
-        x = np.arange(0, 54, 1)
+        x = np.arange(0, 60, 1)
         x = x*0.17017
         y = np.exp(x)
         plt.plot( y , label = "log 50")
@@ -155,10 +158,37 @@ class interpolacion :
         #plt.plot(y  , label = "Interpolados covid")
         plt.ylabel('Individuos')
         plt.xlabel('Días')
+        plt.legend()
         plt.title(' Datos interpolados ')
+        plt.savefig('books_read.png')
         plt.show()
         #mpld3.show()
 inter = interpolacion()
-#inter.get_interpolacion_lineal()
-inter.get_interpolacion_lagrange()
-inter.plot()
+p12 = inter.get_interpolacion_lagrange(12)
+
+inter = interpolacion()
+p24 = inter.get_interpolacion_lagrange(24)
+
+inter = interpolacion()
+p36 = inter.get_interpolacion_lagrange(26)
+
+#inter = interpolacion()
+#p48 = inter.get_interpolacion_lagrange(48)
+
+x = np.arange(0, 60, 1)
+x = x*0.17017
+y = np.exp(x)
+#plt.plot( y , label = "e**(ln8261/53)")
+plt.plot( inter.datos , label = "Muertos covid")
+x = range(len(inter.datos_inter)) 
+plt.scatter( x , p12, label = "Datos 12 x_i[8,10,12]", s = .8)
+plt.scatter( x , p24, label = "Datos 24 x_i[16,20,24]", s = .8)
+plt.scatter( x , p36, label = "Datos 36 x_i[24,30,36]", s = .8)
+#plt.scatter( x , p48, label = "Datos 48 x_i[32,40,48]", s = .8)
+plt.ylabel('Individuos')
+plt.xlabel('Días')
+plt.legend()
+plt.title(' Datos interpolados ')
+plt.savefig('Datos33.png')
+plt.show()        
+#inter.plot()

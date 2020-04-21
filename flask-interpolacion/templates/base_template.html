@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+    <head>
+    {% block head %}
+        <title>{% block title %}{% endblock %} - Simple Flask app</title>
+    {% endblock %}
+    </head>
+    <body>
+        <div id="content" >
+            {% block content %}{% endblock %}</div>
+        <footer>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        </footer>
+    </body>
+</html>
+
+<body>
