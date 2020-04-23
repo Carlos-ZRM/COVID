@@ -1,5 +1,3 @@
 flask
 cython
 numpy
-matplotlib==3.0
-pandas
