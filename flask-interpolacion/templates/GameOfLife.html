@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Game of Life</title>
+    <link rel="stylesheet" type="text/css" href="css/general.css">
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/p5.dom.min.js"></script>
+    <script src="libraries/cytoscape.min.js"></script>
+    <script src="js/gol_utils.js"></script>
+
+</head>
+
+<body>
+    <form id="myForm">
+        <!--
+        <select id="mySelect" size="2" style="margin-left: 485px;">
+            <option>2333</option>
+            <option>7722</option>
+        </select>
+    -->
+
+        <input type="checkbox" id="automatic"> Automático <br>
+        <input id="background-color" type="color" /> Color de Fondo
+        <input id="cell-color" type="color" /> Color de celda <br>
+    </form>
+    <div id="cy"></div>
+    <script src="js/gol.js"></script>
+</body>
+
+</html>

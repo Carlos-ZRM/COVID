@@ -1,15 +1,13 @@
 <!doctype html>
-
+<head>
+    <title>Hola</title>
+    <meta charset="utf-8"/> 
+</head>
 <html>
-    <head>
-        <title>Hola</title>
-        <meta charset="utf-8"/> 
-    </head>
     <body>
-        {{result}}
-        <canvas id="myCanvas" width="300" height="300" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
+        <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
         <script>
-            var result = {{ result }} ; 
+            //var result = {{ result }} ; 
             var c = document.getElementById("myCanvas");
             var ctx = c.getContext("2d");
             ctx.beginPath();
@@ -17,13 +15,9 @@
                 for (var y = 0; y < 50 ; y++) {
                     //console.log(result[x][y][1]);
                     console.log(y);
-                    ctx.fillRect(x*2, y*2, 2, 2);
+                    ctx.fillRect(x*5, y*5, 5, 5);
                 }
             }
-
-            
         </script>
-        
-
     </body>
 </html>

@@ -3,6 +3,7 @@ from flask import Flask
 import io
 
 from flask import render_template, request, redirect, url_for, Response, session
+from flask_cors import CORS
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from interpolacion import flask
@@ -10,6 +11,7 @@ from eca_sir import *
 eca = None
 app = Flask(__name__ , template_folder='templates')
 app.secret_key = 'app secret key'
+CORS(app)
 app.debug = True
 
 @app.route("/")
@@ -67,13 +69,22 @@ def sir_evolucion():
         print(cell_x)
         """
         #return redirect(url_for("sir_evolucion", result=result))
+        """
+        if eca == None :
+            print("evolucion-sir  none")
+            return redirect(url_for("sir"))
+        """
         return render_template("sir_canvas.html")
                
     return render_template("sir_canvas.html")
 
 @app.route("/evolucion-sir-ajax/", methods=["GET"])
 def sir_evolucion_ajax():
-    
+    """
+    if eca == None :
+        print("ajax none")
+        return redirect(url_for("sir"))
+    """
     result = eca.simulacion_flask()
     """
         cell_x = request.form['cell_x']
