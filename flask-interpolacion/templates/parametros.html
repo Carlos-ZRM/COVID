@@ -4,25 +4,28 @@
     <form action="" method="post">
         
         <label for="cell_x">Numero de celulas X: </label>
-        <input type='number' id="cell_x" name="cell_x" /><br>
+        <input type='number' min="1" max="100"  id="cell_x" name="cell_x" required><br>
          
         <label for="cell_y">Numero de celulas Y: </label>
-        <input type='number' id="cell_y" name="cell_y" /><br>
+        <input type='number' min="1" max="100"  id="cell_y" name="cell_y" required /><br>
+        
+        <label for="step">Numero de evoluciones: </label>
+        <input type='number'  min="1" max="1000"  id="step" name="step" required /><br>
         
         <label for="N">Población por celula: </label>
-        <input type='number' id="N" name="N" /><br>
+        <input type='number'  min="1" max="1000"  id="N" name="N" required /><br>
         
         <label for="v">Virulencia : </label>
-        <input type='number' step='0.01' max='1.0' vale='0.6' id="v" name="v" /><br>
+        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="v" name="v" required /><br>
         
         <label for="epsilon">epsilon : </label>
-        <input type='number' step='0.01' max='1.0' vale='0.6' id="epsilon" name="epsilon" /><br>
+        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="epsilon" name="epsilon" required /><br>
 
         <label for="c">conectividad : </label>
-        <input type='number' step='0.01' max='1.0' vale='0.6' id="c" name="c" /><br>
+        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="c" name="c" required /><br>
 
         <label for="m">m : </label>
-        <input type='number' step='0.01' max='1.0' vale='0.6' id="m" name="m" /><br>
+        <input type='number' step='0.01' max='1.0' vale='0.6' id="m" name="m" required /><br>
 
                 
         <input type="submit" id="calcular" name="calcular" value="calcular" />

@@ -10,13 +10,15 @@ class GUI:
     rosa = (229,70,143)
     rojo = (223,1,1)
     negro = (25,7,11)
-    def __init__(self, cell_height, cell_width, size=1):
-        
-        self.height = cell_height
-        self.width = cell_width
+    def __init__(self, cell_x, cell_y, size=1):
+        size = 7
+        self.cell_x = cell_x
+        self.cell_y = cell_y
         self.size = size
         pygame.init()
-        self.display=pygame.display.set_mode((self.height*size, self.width*size) )
+        #self.display=pygame.display.set_mode((self.cell_x*size, self.cell_
+        # y*size) )
+        self.display=pygame.display.set_mode((self.cell_y*size, self.cell_x*size ) )
         self.display.fill((255,255,255))
         pygame.display.update()
         #self.evolucion(color1=(200,100,10), color2=(32,55,40))
@@ -38,24 +40,34 @@ class GUI:
         i = 0 
         j = 0
         
-        while i < self.height:
+        while i < self.cell_x:
             j = 0
-            while j < self.width:
+            
+            while j <  self.cell_y :
                 degradado = data[i][j][1]
-                degradado = int(degradado*255)
-
+                #print(degradado, i, j , data[i][j] )
+                if degradado == None:
+                    color = (0,0,102)
+                elif np.isnan(degradado):
+                    color = (0,0,102)
+                else:
+                    #print("deg",degradado)
+                    degradado = int( (1-degradado)*255 )
+                    
                 if degradado == 0:
                     color = (255, 255, 255)
                 elif degradado > 255:
-                     color = (0, 0, 0)
-                else : 
+                    color = (0, 0, 0)
+                elif np.isnan(degradado):
+                    color = (0,0,102)
+                else:
                     color = (degradado,degradado,degradado)
-                
-                pygame.draw.rect(self.display,color,(i*self.size,j*self.size,self.size,self.size))
+                #print(i,j,color, data[i][j][4] )
+                pygame.draw.rect(self.display,color,(j*self.size,i*self.size,self.size,self.size))
                 j = j+1
             i = i +1
         pygame.display.update()
-        sleep(0.1)
+        sleep(0.03)
     
     def evolucion_svh(self, data):
         self.display.fill((255,255,255))
@@ -63,9 +75,9 @@ class GUI:
         j = 0
         x = y = 0
         
-        while i < self.height:
+        while i < self.cell_x:
             j = 0
-            while j < self.width:
+            while j < self.cell_y:
                 if data[i][j][0] == 0:
                     color = self.verde
                 elif data[i][j][0] == 1:
@@ -98,9 +110,9 @@ class GUI:
         #pygame.draw.rect(self.display,(20,200,255),(x,y,h,g))
         x = y = 0
         
-        while i < self.height:
+        while i < self.cell_x:
             j = 0
-            while j < self.width:
+            while j < self.cell_y:
                 if (i + j)%2 == 0:
                     color = color1
                 else :
@@ -123,12 +135,14 @@ class GUI:
                     sys.exit()
             """
     def plot_sir (self, t_s, t_i, t_r):
-        plt.plot(t_s , label = "Suceptibles")
+        #plt.plot(t_s , label = "Suceptibles")
         plt.plot(t_i, label = "Infectados")
+        print("\n\n**************\n Maximo y minmo de recuperados \n" , max(t_i), min(t_i)  ,"\n**********************\n\n")
         plt.plot(t_r, label = "Recuperados")
         plt.ylabel('Individuos')
         plt.xlabel('Días')
         plt.title(' Modelo SIR ')
+        plt.legend()
         plt.show()
 
     def plot_svh(self, virus, vivas , elipse , secretoras ,  muertas):

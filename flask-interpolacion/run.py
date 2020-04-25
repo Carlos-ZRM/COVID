@@ -2,12 +2,13 @@ from flask import Flask
 #from forms import PostForm
 import io
 
-from flask import render_template, request, redirect, url_for, Response, session
+from flask import render_template, request, redirect, url_for, Response, session, json
 from flask_cors import CORS
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from interpolacion import flask
 from eca_sir import *
+
 eca = None
 app = Flask(__name__ , template_folder='templates')
 app.secret_key = 'app secret key'
@@ -43,17 +44,23 @@ def interpolacion_form():
 @app.route("/sir/", methods=["GET", "POST"])
 def sir():
     if request.method == 'POST':
-        global eca    
-        eca = ECA (50,50,100,flask=True)
-        #session['eca'] = eca
-        if next:
-
+        global eca
+        epsilon = request.form['epsilon']
+        v = request.form['v']
+        N = request.form['N']
+        m = request.form['m']
+        c = request.form['c']
+        print("\n****   ", type(epsilon), epsilon)
+        eca = ECA (50,50,100,True, float(epsilon), float(v), int(N), float(m),float(c) )
+        #session['eca'] = eca-
+        ##next = request.args.get('next', None)
+        ##if next:  
         #return redirect(next)
-            return redirect(url_for('sir_evolucion'))
+            ##return redirect(url_for('sir_evolucion'))
             #return Response(output.getvalue(), mimetype='image/png')
         #return redirect(url_for('index'))
         #return 'recurso no encontrado'
-        
+        return redirect(url_for('sir_evolucion'))
         #return redirect("/evolucion-sir", messages={"main":"Condition failed on page baz"})
                 # return Response(output.getvalue(), mimetype='image/png')
     return render_template("parametros.html")
@@ -86,12 +93,13 @@ def sir_evolucion_ajax():
         return redirect(url_for("sir"))
     """
     result = eca.simulacion_flask()
+    print(result)
     """
         cell_x = request.form['cell_x']
         print(cell_x)
     """
         #return redirect(url_for("sir_evolucion", result=result))
-    return render_template("sir_canvas_ajax.html", result=result)           
+    return render_template("sir_canvas_ajax.html", result=json.dumps(result))           
     
 if __name__ == "__main__":
     app.run()

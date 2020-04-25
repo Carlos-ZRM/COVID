@@ -5,12 +5,14 @@
 </head>
 <html>
     <body>
+        <h3>Mi mola</h3>
         <canvas id="myCanvas" width="300" height="150" style="border:1px solid #d3d3d3;">Your browser does not support the HTML5 canvas tag.</canvas>
         <script>
             //var result = {{ result }} ; 
             var c = document.getElementById("myCanvas");
             var ctx = c.getContext("2d");
             ctx.beginPath();
+            ctx.fillStyle = "rgba(255,100,100)";
             for (var x = 0; x < 50 ; x++) {
                 for (var y = 0; y < 50 ; y++) {
                     //console.log(result[x][y][1]);
