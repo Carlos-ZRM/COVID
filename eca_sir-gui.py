@@ -305,7 +305,7 @@ class ECA:
         """
 if __name__ == "__main__":
     epsilon=.4
-    v=.2
+    v=.6
     m=0.2
     c=.9
 

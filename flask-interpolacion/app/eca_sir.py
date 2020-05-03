@@ -50,7 +50,8 @@ class ECA:
 
     """
 
-    def __init__(self , cell_x, cell_y, step, flask=None, epsilon=None, v=None, N=None, m=None ,c=None ):
+    def __init__(self , cell_x=10, cell_y=10, step=10, flask=None, epsilon=None, v=None, N=None, m=None ,c=None ):
+
         self.cell_x=cell_x
         self.cell_y=cell_y
         self.step = step
@@ -170,7 +171,6 @@ class ECA:
         while i < self.cell_x:
             j = 0
             fila = []
-            f= ""
             while j < self.cell_y:
                 
                 a = self.pob_act[i][j][1]
@@ -180,9 +180,7 @@ class ECA:
                 else :
                     a = int( (1-a)*255 )
                     fila.extend( [(a,a,a)]*esc )
-                if a >0 or a < 240:
 
-                    f =f +"  "+str(a)
                 j = j +1
             result.extend(fila*esc)
             i = i +1
@@ -201,6 +199,7 @@ class ECA:
             #print("Dia: ", i)
             i = i +1
         print("Dia ",i)
+   
     def evolucion_ti(self):
 
         i = j = t_s = t_i = t_r = 0
@@ -301,11 +300,12 @@ class ECA:
     def graficas_flask(self):
         fig = Figure()
         axis = fig.add_subplot(1, 1, 1)
-        plt.plot(self.total_s , label = "Suceptibles")
-        plt.plot(self.total_i, label = "Infectados")
-        plt.plot(self.total_r, label = "Recuperados")
-        plt.show()
-        #return fig 
+        
+        axis.plot(self.total_s , label = "Suceptibles")
+        axis.plot(self.total_i, label = "Infectados")
+        axis.plot(self.total_r, label = "Recuperados")
+        
+        return fig 
         """
         plt.ylabel('Individuos')
         plt.xlabel('Días')

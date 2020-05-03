@@ -1,0 +1,92 @@
+{% extends "base_template.html" %}
+{% block head %}
+<title>{% block title %} Configuracion inicial {% endblock %} 
+</title>
+{% endblock %}
+
+{% block content %}
+<table>
+  <tr>
+    <th>Evoluciones</th>
+    <th>Virulencia</th>
+    <th>Epsilon</th>
+    <th>Conectividad</th>
+    <th>M</th>
+  </tr>
+  <tr>
+    <td> {{step}} </td>
+    <td> {{v}} </td>
+    <td> {{epsilon}} </td>
+    <td> {{c}} </td>
+    <td> {{m}} </td>
+  </tr>
+</table>
+
+<img src="/plot_mexico/0" id="myImg" alt="Image Placeholder" height="300">
+<p id="p1">-1</p>
+<p>Graficas</p>
+<img src="/plot_mexico_grafica/0" id="myImg2" alt="Image Placeholder" height="300">
+
+<script type="text/javascript">
+  var flag = 0;
+  var  step = {{step}} ;
+  i = 0;
+  function startEvolucion()
+  {
+    if (flag==0)
+    {
+      flag = 1;  
+      evolucion= setInterval(function() {
+        i = i +1
+        let reloadable_item = document.getElementById('myImg');
+        reloadable_item.src = "/plot_mexico/"+i;
+        let reloadable_item2 = document.getElementById('myImg2');
+        reloadable_item2.src = "/plot_mexico_grafica/"+i;
+        document.getElementById("p1").innerHTML = i+"/"+step;
+        console.log("Evolucion "+i);
+      }, 800);
+    }
+  }
+  function stopEvolucion()
+  {
+    if (flag==1)
+    {
+      flag = 0;
+      clearInterval(evolucion);
+     }  
+  }
+  for (var i = 0; i < step; i++)
+  {
+    
+    let reloadable_item = document.getElementById('myImg');
+    reloadable_item.src = "/plot_mexico/"+i;
+      
+    let reloadable_item2 = document.getElementById('myImg2');
+    reloadable_item2.src = "/plot_mexico_grafica/"+i;
+
+    document.getElementById("p1").innerHTML = i+"/"+step;
+    console.log("Evolucion "+i);
+
+    setTimeout(function (){}, 1000);
+
+  }
+
+  //}
+  //var a= 0;
+  //setInterval(function() {
+  
+  //let reloadable_item = document.getElementById('myImg')
+  //	reloadable_item.src += "?var=1"
+  //}, 500);
+  
+  
+  
+  //setInterval(loadDoc,5000);
+  </script>
+  <button onclick="startEvolucion()">Start</button>
+  <button onclick="stopEvolucion()">Stop</button>
+  
+
+
+{% endblock %}
+
