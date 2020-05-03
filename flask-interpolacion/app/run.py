@@ -2,7 +2,7 @@ from flask import Flask
 #from forms import PostForm
 import io
 
-from flask import render_template, request, redirect, url_for, Response, session, json
+from flask import render_template, request, redirect, url_for, Response, session, jsonify
 from flask_cors import CORS
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -27,14 +27,15 @@ def hello():
 def interpolacion_form():
     if request.method == 'POST':
             numDatos = request.form['numDatos']
-            print("numDatos", numDatos)
+            numInicio = request.form['numInicio']
             next = request.args.get('next', None)
-            fig = flask(numDatos)
-            output = io.BytesIO()
-            FigureCanvas(fig).print_png(output)
+            #fig = flask(numDatos)
+            #output = io.BytesIO()
+            #FigureCanvas(fig).print_png(output)
             if next:
             #return redirect(next)
-                return Response(output.getvalue(), mimetype='image/png')
+                #return Response(output.getvalue(), mimetype='image/png')
+                return render_template("interpolacion_canvas.html")
         #return redirect(url_for('index'))
         #return 'recurso no encontrado'
 
@@ -57,11 +58,11 @@ def sir():
         N = request.form['N']
         m = request.form['m']
         c = request.form['c']
-        print("\n****   ", type(epsilon), epsilon)
+        print("\n****   +", type(epsilon), epsilon)
         eca = ECA (int(cell_x), int(cell_y) ,step,True, float(epsilon), float(v), int(N), float(m),float(c) )
 
         eca.initializate() 
-        return render_template("sir_canvas.html", N=N,step=step,v=v, epsilon=epsilon, m=m, c=c )
+        return render_t+emplate("sir_canvas.html", N=N,step=step,v=v, epsilon=epsilon, m=m, c=c )
  
     return render_template("parametros.html")
 
@@ -71,7 +72,8 @@ def sir_mexico():
         global eca
         epsilon = request.form['epsilon']
         v = request.form['v']
-        step = request.form['step']
+        #sstep = request.form['step']
+        step = 10
         m = request.form['m']
         c = request.form['c']
 
@@ -127,27 +129,7 @@ def sir_evolucion_mexico():
 
     return render_template("sir_canvas.html")
 
-
-
-
-@app.route("/evolucion-sir-ajax/", methods=["GET"])
-def sir_evolucion_ajax():
-   
-   
-    """
-    if eca == None :
-        print("ajax none")
-        return redirect(url_for("sir"))
-    """
-    
-
-
-    """
-        cell_x = request.form['cell_x']
-        print(cell_x)
-    """
-        #return redirect(url_for("sir_evolucion", result=result))
-    return render_template("sir_canvas_ajax.html")         
+         
 
 @app.route('/plot/<imgdata>')
 def plot(imgdata):
@@ -175,6 +157,20 @@ def plot_mexico_grafica(imgdata):
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/plot_interpolacion/<imgdata>')
+def plot_interpolacion(imgdata):
+    fig = flask(imgdata)
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/get_datos')
+def get_datos():
+    
+    s,  i , r = eca.get_datos()
+
+    return jsonify(s=s,i=i,r=r)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int("5000"), debug=True)

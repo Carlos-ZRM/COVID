@@ -162,7 +162,7 @@ class ECA:
         self.pob_act[i//2][j//2]=[.7,0.3, 0., self.N ]
         #self.pob_act[i//4][j//4]=[.7,0.3, 0., self.N ]
     
-    def simulacion_flask(self , esc = 5 ):
+    def simulacion_flask(self , esc = 4 ):
         self.evolucion_ti()
         img  = Image.new( 'RGB',[self.cell_y*esc , self.cell_x*esc ] )
         result = []
@@ -172,14 +172,29 @@ class ECA:
             j = 0
             fila = []
             while j < self.cell_y:
-                
-                a = self.pob_act[i][j][1]
+                """
+                S: G
+                I: R
+                R: B
+                i,s,r
+                """
+
+                s_col = self.pob_act[i][j][0]
+                i_col = self.pob_act[i][j][1]
+                r_col = self.pob_act[i][j][2]
                
-                if a is None or np.isnan(a):
+                if i_col is None or np.isnan(i_col):
                     fila.extend( [ (0,0,102) ]*esc )
                 else :
-                    a = int( (1-a)*255 )
-                    fila.extend( [(a,a,a)]*esc )
+                    #s_col = int( (1-s_col)*255 )
+                    #i_col = int( (1-i_col)*255 )
+                    #r_col = int( (1-r_col)*255 )
+                    
+                    s_col = int( (s_col)*255 )
+                    i_col = int( (i_col)*255 )
+                    r_col = int( (r_col)*255 )
+                    
+                    fila.extend( [( i_col, s_col, r_col )]*esc )
 
                 j = j +1
             result.extend(fila*esc)
@@ -312,6 +327,11 @@ class ECA:
         plt.title(' Modelo SIR ')
         plt.show()
         """
+    def get_datos(self):
+        s = self.total_s[-1]
+        i = self.total_i[-1]
+        r = self.total_r[-1]
+        return s , i , r
 if __name__ == "__main__":
     epsilon=.4
     v=.9
