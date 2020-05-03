@@ -22,7 +22,7 @@ app.debug = True
 
 @app.route("/")
 def hello():
-    return "Covid 19 alirob"
+    return render_template("index.html")
 @app.route("/interpolacion/", methods=["GET", "POST"])
 def interpolacion_form():
     if request.method == 'POST':
@@ -49,27 +49,20 @@ def interpolacion_form():
 def sir():
     if request.method == 'POST':
         global eca
+        cell_x = request.form['cell_x']
+        cell_y = request.form['cell_y']
+        step=0
         epsilon = request.form['epsilon']
         v = request.form['v']
         N = request.form['N']
         m = request.form['m']
         c = request.form['c']
         print("\n****   ", type(epsilon), epsilon)
-        eca = ECA (50,50,100,True, float(epsilon), float(v), int(N), float(m),float(c) )
-        step = 15
-        #eca.initializate()
-        eca.iniciar_mexico()
-        #session['eca'] = eca-
-        ##next = request.args.get('next', None)
-        ##if next:  
-        #return redirect(next)
-            ##return redirect(url_for('sir_evolucion'))
-            #return Response(output.getvalue(), mimetype='image/png')
-        #return redirect(url_for('index'))
-        #return 'recurso no encontrado'
-        return redirect(url_for('sir_evolucion', step = step))
-        #return redirect("/evolucion-sir", messages={"main":"Condition failed on page baz"})
-                # return Response(output.getvalue(), mimetype='image/png')
+        eca = ECA (int(cell_x), int(cell_y) ,step,True, float(epsilon), float(v), int(N), float(m),float(c) )
+
+        eca.initializate() 
+        return render_template("sir_canvas.html", N=N,step=step,v=v, epsilon=epsilon, m=m, c=c )
+ 
     return render_template("parametros.html")
 
 @app.route("/sir-mexico/", methods=["GET", "POST"])

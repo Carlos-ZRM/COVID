@@ -1,34 +1,47 @@
 {% extends "base_template.html" %}
 {% block title %}Configuracion inicial{% endblock %}
-{% block content %}
+{% block form %}
+<h1 class="w3-xxxlarge w3-text-blue"><b>Datos para el modelo covid en autómatas celulres elementales.</b></h1>
+<hr style="width:50px;border:5px solid blueviolet" class="w3-round">
+<p>Informacion sobre el modelo SIR</p>
     <form action="" method="post">
+        <div class="w3-section">
+            <label for="cell_x">Numero de celulas X: </label>
+            <input type='number' class="w3-input w3-border"  min="1" max="100"  id="cell_x" name="cell_x" required><br>
+        </div>
+        <div class="w3-section">
+            <label for="cell_y">Numero de celulas Y: </label>
+            <input type='number' min="1" max="100"  id="cell_y" name="cell_y" class="w3-input w3-border"  required /><br>
+        </div>
+        <div class="w3-section">
+            
+            <label for="step">Numero de evoluciones: </label>
+            <input type='number'  min="1" max="1000"  id="step" name="step" class="w3-input w3-border"  required /><br>
+        </div>
+        <div class="w3-section">
+            
+            <label for="N">Población por celula: </label>
+            <input type='number'  min="1" max="1000"  id="N" name="N" class="w3-input w3-border"  required /><br>
+        </div>
+        <div class="w3-section">
         
-        <label for="cell_x">Numero de celulas X: </label>
-        <input type='number' min="1" max="100"  id="cell_x" name="cell_x" required><br>
-         
-        <label for="cell_y">Numero de celulas Y: </label>
-        <input type='number' min="1" max="100"  id="cell_y" name="cell_y" required /><br>
-        
-        <label for="step">Numero de evoluciones: </label>
-        <input type='number'  min="1" max="1000"  id="step" name="step" required /><br>
-        
-        <label for="N">Población por celula: </label>
-        <input type='number'  min="1" max="1000"  id="N" name="N" required /><br>
-        
-        <label for="v">Virulencia : </label>
-        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="v" name="v" required /><br>
-        
-        <label for="epsilon">epsilon : </label>
-        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="epsilon" name="epsilon" required /><br>
-
-        <label for="c">conectividad : </label>
-        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="c" name="c" required /><br>
-
-        <label for="m">m : </label>
-        <input type='number' step='0.01' max='1.0' vale='0.6' id="m" name="m" required /><br>
-
+            <label for="v">Virulencia : </label>
+            <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="v" name="v" class="w3-input w3-border"  required /><br>
+        </div>
+        <div class="w3-section">
+            <label for="epsilon">epsilon : </label>
+            <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="epsilon" name="epsilon" class="w3-input w3-border"  required /><br>
+        </div>
+        <div class="w3-section">        
+            <label for="c">conectividad : </label>
+            <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="c" name="c" class="w3-input w3-border"  required /><br>
+        </div>      
+        <div class="w3-section">
+            <label for="m">m : </label>
+            <input type='number' step='0.01' max='1.0' vale='0.6' id="m" name="m" class="w3-input w3-border"  required /><br>
+        </div>
                 
-        <input type="submit" id="calcular" name="calcular" value="calcular" />
+        <input type="submit"  class="w3-button w3-block w3-padding-large w3-blue w3-margin-bottom" id="calcular" name="calcular" value="calcular" />
     </form>
 
     {% endblock %}

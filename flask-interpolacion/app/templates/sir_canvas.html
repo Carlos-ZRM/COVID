@@ -5,11 +5,15 @@
 {% endblock %}
 
 {% block content %}
-<h1 class="w3-xxxlarge w3-text-blue"><b>Simulación SIR de Covid en el mapa de México.</b></h1>
+<br>
+<h3 class="w3-xxxlarge w3-text-blue"><b>Simulación SIR de Covid en autómatas celulares</b></h3>
 <hr style="width:50px;border:5px solid blueviolet" class="w3-round">
 
 <table class="w3-table w3-striped w3-white">
   <tr>
+    <th>Cell_x</th>
+    <th>Cell_y</th>
+    <th>Poblacion celula</th>
     <th>Evoluciones</th>
     <th>Virulencia</th>
     <th>Epsilon</th>
@@ -17,6 +21,9 @@
     <th>M</th>
   </tr>
   <tr>
+    <td> {{cell_x}} </td>
+    <td> {{cell_y}} </td>
+    <td> {{N}} </td>
     <td> {{step}} </td>
     <td> {{v}} </td>
     <td> {{epsilon}} </td>
@@ -25,7 +32,7 @@
   </tr>
 </table>
 
-<img src="/plot_mexico/0" id="myImg" alt="Image Placeholder" height="300">
+<img src="/plot/0" id="myImg" alt="Image Placeholder" height="300">
 <p id="p1">-1</p>
 <p>Graficas</p>
 <img src="/plot_mexico_grafica/0" id="myImg2" alt="Image Placeholder" height="300">
@@ -42,12 +49,12 @@
       evolucion= setInterval(function() {
         i = i +1
         let reloadable_item = document.getElementById('myImg');
-        reloadable_item.src = "/plot_mexico/"+i;
+        reloadable_item.src = "/plot/"+i;
         let reloadable_item2 = document.getElementById('myImg2');
         reloadable_item2.src = "/plot_mexico_grafica/"+i;
         document.getElementById("p1").innerHTML = i+"/"+step;
         console.log("Evolucion "+i);
-      }, 800);
+      }, 400);
     }
   }
   function stopEvolucion()
@@ -58,12 +65,12 @@
       clearInterval(evolucion);
      }  
   }
-
+  
   for (var i = 0; i < step; i++)
   {
     
     let reloadable_item = document.getElementById('myImg');
-    reloadable_item.src = "/plot_mexico/"+i;
+    reloadable_item.src = "/plot/"+i;
       
     let reloadable_item2 = document.getElementById('myImg2');
     reloadable_item2.src = "/plot_mexico_grafica/"+i;

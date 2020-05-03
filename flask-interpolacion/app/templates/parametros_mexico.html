@@ -1,24 +1,31 @@
 {% extends "base_template.html" %}
 {% block title %}Modelo covid en México{% endblock %}
-{% block content %}
+{% block form %}
+<br>    
+<h4 class="w3-xxxlarge w3-text-blue"><b>SIR covid en autómatas celulres con el mapa de México.</b></h4>
+<hr style="width:50px;border:5px solid blueviolet" class="w3-round">
     <form action="" method="post">
         
-        
-        <label for="N">Número de evoluciones </label>
-        <input type='number'  min="1" max="1000"  id="step" name="step" palceholder=60 required /><br>
-        
-        <label for="v">Virulencia : </label>
-        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="v" name="v" required /><br>
-        
-        <label for="epsilon">epsilon : </label>
-        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="epsilon" name="epsilon" required /><br>
-
-        <label for="c">conectividad : </label>
-        <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="c" name="c" required /><br>
-
-        <label for="m">m : </label>
-        <input type='number' step='0.01' max='1.0' vale='0.6' id="m" name="m" required /><br>
-
+        <div class="w3-section">
+            <label for="N">Número de evoluciones </label>
+            <input type='number'  min="1" max="1000"  id="step" name="step" palceholder=60 required /><br>
+        </div>
+        <div class="w3-section">
+            <label for="v">Virulencia : </label>
+            <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="v" name="v" required /><br>
+        </div>
+        <div class="w3-section">
+            <label for="epsilon">epsilon : </label>
+            <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="epsilon" name="epsilon" required /><br>
+        </div>
+        <div class="w3-section">
+            <label for="c">conectividad : </label>
+            <input type='number' step='0.01' min='0' max='1.0' vale='0.6' id="c" name="c" required /><br>
+        </div>
+        <div class="w3-section">
+            <label for="m">m : </label>
+            <input type='number' step='0.01' max='1.0' vale='0.6' id="m" name="m" required /><br>
+        </div>
                 
         <input type="submit" id="calcular" name="calcular" value="calcular" />
     </form>
