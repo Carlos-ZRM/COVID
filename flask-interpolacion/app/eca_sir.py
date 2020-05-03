@@ -1,5 +1,7 @@
-from cairo import *
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+from PIL import Image
+import numpy as np
 import csv
 
 class ECA:
@@ -53,8 +55,7 @@ class ECA:
         self.cell_y=cell_y
         self.step = step
         self.flask = flask
-        if flask == None:
-            self.gui = GUI(cell_x,cell_y,5)
+        
         #self.pob_act = np.full( (cell_x,cell_y,4), float)
         #self.pob_sig = np.full( (cell_x,cell_y,4), float)
         self.pob_act = np.empty(shape=[cell_x,cell_y,4 ])
@@ -101,7 +102,7 @@ class ECA:
             for row in reader:
                 print(row)
 
-    def iniciar_mexico(self, inf=10 ):
+    def iniciar_mexico(self , inf = 10 ):
         #print(self.mx)
         self.cell_x = 45
         self.cell_y = 72
@@ -140,11 +141,7 @@ class ECA:
         self.total_s.append(t_s)
         self.total_i.append(0)
         self.total_r.append(0)
-        if self.flask == None:
-            print("**")
-            self.gui = GUI(self.cell_x,self.cell_y,5)
-            self.gui.evolucion_sir(self.pob_act)
-
+       
         
     def initializate (self):
         i = 0 
@@ -164,35 +161,46 @@ class ECA:
         self.pob_act[i//2][j//2]=[.7,0.3, 0., self.N ]
         #self.pob_act[i//4][j//4]=[.7,0.3, 0., self.N ]
     
-    def simulacion_flask(self):
+    def simulacion_flask(self , esc = 5 ):
         self.evolucion_ti()
+        img  = Image.new( 'RGB',[self.cell_y*esc , self.cell_x*esc ] )
         result = []
         i = 0 
         j = 0
         while i < self.cell_x:
             j = 0
+            fila = []
+            f= ""
             while j < self.cell_y:
+                
                 a = self.pob_act[i][j][1]
-                a = int(255*a)
-                result.append(a)
+               
+                if a is None or np.isnan(a):
+                    fila.extend( [ (0,0,102) ]*esc )
+                else :
+                    a = int( (1-a)*255 )
+                    fila.extend( [(a,a,a)]*esc )
+                if a >0 or a < 240:
+
+                    f =f +"  "+str(a)
                 j = j +1
+            result.extend(fila*esc)
             i = i +1
+
+        img.putdata(result)
+        #img.show()
+        img.save("nono.png")
         #return self.pob_act
-        return result
+        return img
 
-
+    
     def simulation(self):
         i = 0 
-        if self.flask == None:
-            self.gui.evolucion_sir(self.pob_act)
         while i < self.step:
             self.evolucion_ti()
-            if self.flask == None: 
-                self.gui.evolucion_sir(self.pob_act)
-            print("Dia: ", i)
+            #print("Dia: ", i)
             i = i +1
-        if self.flask == None:
-            self.gui.plot_sir(self.total_s ,self.total_i ,self.total_r  )
+        print("Dia ",i)
     def evolucion_ti(self):
 
         i = j = t_s = t_i = t_r = 0
@@ -293,10 +301,11 @@ class ECA:
     def graficas_flask(self):
         fig = Figure()
         axis = fig.add_subplot(1, 1, 1)
-        axis.plot(self.total_s , label = "Suceptibles")
-        axis.plot(self.total_i, label = "Infectados")
-        axis.plot(self.total_r, label = "Recuperados")
-        return fig 
+        plt.plot(self.total_s , label = "Suceptibles")
+        plt.plot(self.total_i, label = "Infectados")
+        plt.plot(self.total_r, label = "Recuperados")
+        plt.show()
+        #return fig 
         """
         plt.ylabel('Individuos')
         plt.xlabel('Días')
@@ -305,12 +314,21 @@ class ECA:
         """
 if __name__ == "__main__":
     epsilon=.4
-    v=.2
-    m=0.2
+    v=.9
+    m=1
     c=.9
 
-    eca = ECA (45,72,80,epsilon=epsilon, v=v, m=m ,c=c)
+    eca = ECA (45,72,15,epsilon=epsilon, v=v, m=m ,c=c)
     eca.iniciar_mexico()
-    eca.simulation()
+    for a in range(15):
+        img = eca.simulacion_flask()
+        #img.show()
+        img.save("hola.png")
+        img.close()
+    
+    eca.graficas_flask()
+
+
+    #eca.simulation()
 
 #solve { x - (ay^2 -2b y+c )/(ac - b^2) = 0 , y - ( r +  (x^.5)* (c-2rb + r^2 *a)^.5 ),  Constants -> {a,b,c} }

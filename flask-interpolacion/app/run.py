@@ -8,6 +8,10 @@ import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from interpolacion import flask
 from eca_sir import *
+from PIL import Image
+import time
+
+
 
 eca = None
 app = Flask(__name__ , template_folder='templates')
@@ -52,6 +56,9 @@ def sir():
         c = request.form['c']
         print("\n****   ", type(epsilon), epsilon)
         eca = ECA (50,50,100,True, float(epsilon), float(v), int(N), float(m),float(c) )
+        step = 15
+        #eca.initializate()
+        eca.iniciar_mexico()
         #session['eca'] = eca-
         ##next = request.args.get('next', None)
         ##if next:  
@@ -60,7 +67,7 @@ def sir():
             #return Response(output.getvalue(), mimetype='image/png')
         #return redirect(url_for('index'))
         #return 'recurso no encontrado'
-        return redirect(url_for('sir_evolucion'))
+        return redirect(url_for('sir_evolucion', step = step))
         #return redirect("/evolucion-sir", messages={"main":"Condition failed on page baz"})
                 # return Response(output.getvalue(), mimetype='image/png')
     return render_template("parametros.html")
@@ -70,7 +77,8 @@ def sir_evolucion():
     if request.method == 'GET':
         #result = eca.simulacion_flask()
         #render_template("sir_canvas.html", result=result)
-        
+        #step = request.form['step']
+        step = 15
         """
         cell_x = request.form['cell_x']
         print(cell_x)
@@ -81,27 +89,39 @@ def sir_evolucion():
             print("evolucion-sir  none")
             return redirect(url_for("sir"))
         """
-        return render_template("sir_canvas.html")
+        return render_template("sir_canvas.html",step=step)
                
     return render_template("sir_canvas.html")
 
 @app.route("/evolucion-sir-ajax/", methods=["GET"])
 def sir_evolucion_ajax():
+   
+   
     """
     if eca == None :
         print("ajax none")
         return redirect(url_for("sir"))
     """
-    result = eca.simulacion_flask()
-    print(result)
+    
+
+
     """
         cell_x = request.form['cell_x']
         print(cell_x)
     """
         #return redirect(url_for("sir_evolucion", result=result))
-    return render_template("sir_canvas_ajax.html", result=json.dumps(result))           
-    
+    return render_template("sir_canvas_ajax.html")         
+
+@app.route('/plot/<imgdata>')
+def plot(imgdata):
+    result = eca.simulacion_flask()
+
+    output = io.BytesIO()
+
+    result.save(output, 'PNG')
+    return Response(output.getvalue(), mimetype='image/png')
+
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=int("5000"), debug=True)
 
 
