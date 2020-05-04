@@ -92,6 +92,7 @@ class ECA:
         self.total_s = []
         self.total_i = []
         self.total_r = []
+        self.total_a = []
         
         print("*")
         #self.initializate()
@@ -103,7 +104,7 @@ class ECA:
             for row in reader:
                 print(row)
 
-    def iniciar_mexico(self , inf = 10 ):
+    def iniciar_mexico(self , inf = 0 ):
         #print(self.mx)
         self.cell_x = 45
         self.cell_y = 72
@@ -126,11 +127,25 @@ class ECA:
                         self.pob_act[i][j]=[ None , None , None, None, None ]
                         self.pob_sig[i][j]=[ None , None , None, None, None ]
                     else:
-
+                        ran = np.random.uniform(0,1)
                         e = int(e)
                         N = self.mx[e][1]
-                        S = (N - inf)/N
-                        I  = 1 - S
+
+                        #print("\n ran \n" , ran ,(1/self.mx[e][2]))
+
+                        if ran < (1/self.mx[e][2]):
+                            S = (N - 2)/N
+                            I  = 1 - S
+                            #print("S:" , S , I) 
+                        else :
+                            S = 1
+                            I = 0
+                        
+                        #S = (N - inf)/N
+
+                        
+
+                      
                         self.pob_act[i][j]=[ S , I , 0., N, e ]
                         self.pob_sig[i][j]=[ S , I , 0., N, e ]
                         t_s += N
@@ -142,7 +157,7 @@ class ECA:
         self.total_s.append(t_s)
         self.total_i.append(0)
         self.total_r.append(0)
-       
+        self.total_a.append(0)
         
     def initializate (self):
         i = 0 
@@ -159,6 +174,7 @@ class ECA:
         self.total_s.append(t_s)
         self.total_i.append(0)
         self.total_r.append(0)
+        self.total_a.append(0)
         self.pob_act[i//2][j//2]=[.7,0.3, 0., self.N ]
         #self.pob_act[i//4][j//4]=[.7,0.3, 0., self.N ]
     
@@ -263,6 +279,8 @@ class ECA:
         if (S-s_1-s_2) < 0:
             #print("S < 0 ", S, I, suma, "// ", s_1, s_2)
             return 0
+        if (S-s_1-s_2) > 1:
+            return 1
         return S-s_1-s_2
 
     def evolucion_I (self,i,j):
@@ -274,12 +292,17 @@ class ECA:
         i_1 = S*I*self.v
         i_2 = S*suma
         if (i_0+i_1+i_2) < 0:
-            print(" I < 0",S,I,"--",suma, i_0 , i_1 , i_2)
+            print(" I < 0 ",S,I,"--",suma, i_0 , i_1 , i_2)
+            return 0
+        if (i_0+i_1+i_2)>1:
+            return 1
         return i_0+i_1+i_2
 
     def evolucion_R (self,i,j):
         I = self.pob_act[i][j][1]
         R = self.pob_act[i][j][2]
+        if ( R+self.epsilon*I) < 0:
+            return 0
         return R+self.epsilon*I
     def suma(self, i, j):
         Nd = self.pob_act[i][j][3]
@@ -312,13 +335,16 @@ class ECA:
         #print("\n suma",N, I ,r ,self.mu ," *\n")
         return r
             
-    def graficas_flask(self):
+    def graficas_flask(self,opc=3):
         fig = Figure()
-        axis = fig.add_subplot(1, 1, 1)
         
-        axis.plot(self.total_s , label = "Suceptibles")
-        axis.plot(self.total_i, label = "Infectados")
-        axis.plot(self.total_r, label = "Recuperados")
+        axis = fig.add_subplot(1, 1, 1)
+        if opc==2 :
+            axis.plot(self.total_s , label = "Suceptibles")
+            axis.plot(self.total_r, label = "Recuperados")
+            
+        axis.plot(self.total_i, label = "Infectados")    
+        #axis.plot(self.total_a, label = "Acumulado")
         
         return fig 
         """
@@ -331,6 +357,7 @@ class ECA:
         s = self.total_s[-1]
         i = self.total_i[-1]
         r = self.total_r[-1]
+        print(self.total_i)
         return s , i , r
 if __name__ == "__main__":
     epsilon=.4
@@ -340,7 +367,7 @@ if __name__ == "__main__":
 
     eca = ECA (45,72,15,epsilon=epsilon, v=v, m=m ,c=c)
     eca.iniciar_mexico()
-    for a in range(15):
+    for a in range(0):
         img = eca.simulacion_flask()
         #img.show()
         img.save("hola.png")
