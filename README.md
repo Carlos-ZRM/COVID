@@ -5,10 +5,13 @@ La población es dividida en :
 - Infectados. Son los individuos que están enfermos y pueden transmitir la enfermedad a los individuos susceptibles. 
 - Recuperados. Son los individuos que estuvieron enfermos y se han recuperado, estos individuos generaron inmunidad por lo que no pueden volverse a enfermar.
 
-La aplcación de este modelo implica algunas consideraciones necesarias para su aplicción.
+## Consideraciones
+
+La aplcación de este modelo implica algunas consideraciones necesarias para su aplicción. Algunas de ellas podrían ser:
+- Población consta 
 
  
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTE4Mzk2Njg2NjhdfQ==
+eyJoaXN0b3J5IjpbLTE0MDkyNjM5MjNdfQ==
 -->
