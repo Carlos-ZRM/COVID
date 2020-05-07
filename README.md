@@ -6,7 +6,7 @@ La población **N** es dividida en :
 - **I** Infectados. Son los individuos que están enfermos y pueden transmitir la enfermedad a los individuos susceptibles. 
 - **R** Recuperados. Son los individuos que estuvieron enfermos y se han recuperado, estos individuos generaron inmunidad por lo que no pueden volverse a enfermar.
 
-
+Con ecuaciones diferenciales se modela 
 
 
 ## Consideraciones
@@ -19,5 +19,6 @@ La aplcación de este modelo implica algunas consideraciones necesarias para su 
  
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbLTY1MzYxMDM2NCw5ODU5MjQ5OTZdfQ==
+eyJoaXN0b3J5IjpbMTIwNDQxMDAxNywtNjUzNjEwMzY0LDk4NT
+kyNDk5Nl19
 -->
