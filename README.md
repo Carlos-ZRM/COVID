@@ -6,7 +6,7 @@ La población **N** es dividida en :
 - **I** Infectados. Son los individuos que están enfermos y pueden transmitir la enfermedad a los individuos susceptibles. 
 - **R** Recuperados. Son los individuos que estuvieron enfermos y se han recuperado, estos individuos generaron inmunidad por lo que no pueden volverse a enfermar.
 
-Con ecuaciones diferenciales se modela la tasa de transferencia entre las clases de individuos.  donde **v** es una constante que describe la virulencia del virus y **epsilon** la tasa de recuperación del virus
+Con ecuaciones diferenciales se modela la tasa de transferencia entre las clases de individuos.  Donde **v** es una constante que describe la virulencia del virus y **epsilon** una constante que describe la recuperación de los enfermos.
 
 
 ## Consideraciones
@@ -19,6 +19,6 @@ La aplcación de este modelo implica algunas consideraciones necesarias para su 
  
 
 <!--stackedit_data:
-eyJoaXN0b3J5IjpbMTEyNDQzMTksMTIwNDQxMDAxNywtNjUzNj
-EwMzY0LDk4NTkyNDk5Nl19
+eyJoaXN0b3J5IjpbODI0MDkxNzg2LDExMjQ0MzE5LDEyMDQ0MT
+AwMTcsLTY1MzYxMDM2NCw5ODU5MjQ5OTZdfQ==
 -->
