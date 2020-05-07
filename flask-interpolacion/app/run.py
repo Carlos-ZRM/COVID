@@ -52,7 +52,7 @@ def sir():
         global eca
         cell_x = request.form['cell_x']
         cell_y = request.form['cell_y']
-        step=0
+        step = 0
         epsilon = request.form['epsilon']
         v = request.form['v']
         N = request.form['N']
@@ -62,7 +62,9 @@ def sir():
         eca = ECA (int(cell_x), int(cell_y) ,step,True, float(epsilon), float(v), int(N), float(m),float(c) )
 
         eca.initializate() 
-        return render_t+emplate("sir_canvas.html", N=N,step=step,v=v, epsilon=epsilon, m=m, c=c )
+        poblacion= int(cell_x)*int(cell_y)*int(N)
+        
+        return render_template("sir_canvas.html", cell_x=cell_x, cell_y = cell_y , N=N,poblacion=poblacion,v=v, epsilon=epsilon, m=m, c=c )
  
     return render_template("parametros.html")
 

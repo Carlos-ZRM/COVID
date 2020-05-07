@@ -6,4 +6,33 @@
 
 {% block content %}
 Modelos para el covid
+<h1 id="modelosir">Modelo SIR</h1>
+
+<p>Uno de  los modelos más sencillos para representar el coportamiento de las epidemias es el modelo SIR, el cual fue introducido por Kermack-McKendrick.
+El modelo considera la <br />
+La población <strong>N</strong> es dividida en :</p>
+
+<ul>
+<li><strong>S</strong> Susceptibles: Son los individuos que pueden contraer la enfermedad </li>
+
+<li><strong>I</strong> Infectados. Son los individuos que están enfermos y pueden transmitir la enfermedad a los individuos susceptibles. </li>
+
+<li><strong>R</strong> Recuperados. Son los individuos que estuvieron enfermos y se han recuperado, estos individuos generaron inmunidad por lo que no pueden volverse a enfermar.</li>
+</ul>
+
+<p>Con ecuaciones diferenciales se modela la tasa de transferencia entre las clases de individuos.  Donde <strong>v</strong> es una constante que describe la virulidad del virus y <strong>epsilon</strong> una constante que describe la recuperación de los enfermos.</p>
+
+<img src="/static/SIR.gif" alt="Ecuaciones diferenciales SIR" height="150" width="150">
+
+
+<h2 id="consideraciones">Consideraciones</h2>
+
+<p>La aplcación de este modelo implica algunas consideraciones necesarias para su aplicción. Algunas de ellas podrían ser:</p>
+
+<ul>
+<li>Población constante. No se consideran nacimientos ni defunsiones.</li>
+<li>No se considera el uso de vacunas</li>
+<li>No se consideran los individuos que son asintomaticos, no desarrollan la enfermedad pero si pueden contagiar</li>
+</ul>
+
 {% endblock %}

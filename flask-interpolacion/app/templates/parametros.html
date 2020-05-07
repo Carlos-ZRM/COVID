@@ -4,23 +4,22 @@
 <h1 class="w3-xxxlarge w3-text-blue"><b>Datos para el modelo covid en autómatas celulres elementales.</b></h1>
 <hr style="width:50px;border:5px solid blueviolet" class="w3-round">
 <p>Informacion sobre el modelo SIR</p>
-<h3 id="variables">Variables</h3>
+<h5 id="variables">Variables</h5>
 
-<h4 id="epsilon">Epsilon</h4>
+<h5 id="epsilon">Epsilon</h5>
 
 <p>Factor de recuperación. Determina la porción de infectados en <code>t-1</code> que se recuperan en el tiempo <code>t</code>. Epsilon se encuentra en el intervalo <code>[0,1]</code></p>
 
-<h4 id="m">M</h4>
+<h5 id="m">M</h5>
 
 <p>Factor de movimiento de población entre la celda principal y sus celdas vecinas. M esta en el intervalo <code>[0,1]</code> </p>
 
-<h4 id="c">C</h4>
+<h5 id="c">C</h5>
 
 <p>Factor de conectividad de la celda principal con sus celdas vecinas.</p>
 
 <ul>
 <li><code>c = 1</code> si existen 3 medios de transporte entre las celdas</li>
-
 <li><code>c = 0.6</code> si existen 2 medios de transporte entre las celdas</li>
 
 <li><code>c = 0.3</code> si existe un medio de transporte entre las celdas</li>
@@ -28,7 +27,7 @@
 <li><code>c = 0</code> si no existen medios de transporte entre las celdas </li>
 </ul>
 
-<h4 id="v">V</h4>
+<h5 id="v">V</h5>
 
 <p>Virulidad de la epidemia. V esta en el intervalo <code>[0,1]</code></p>
 <hr style="width:50px;border:5px solid blueviolet" class="w3-round">
@@ -37,22 +36,18 @@
 <form action="" method="post">
         <div class="w3-section">
             <label for="cell_x">Numero de celulas X: </label>
-            <input type='number' class="w3-input w3-border"  min="1" max="100"  id="cell_x" name="cell_x" required><br>
+            <input type='number' class="w3-input w3-border"  min="1" max="100"  id="cell_x" name="cell_x" value="22" required><br>
         </div>
         <div class="w3-section">
             <label for="cell_y">Numero de celulas Y: </label>
-            <input type='number' min="1" max="100"  id="cell_y" name="cell_y" class="w3-input w3-border"  required /><br>
-        </div>
-        <div class="w3-section">
-            
-            <label for="step">Numero de evoluciones: </label>
-            <input type='number'  min="1" max="1000"  id="step" name="step" class="w3-input w3-border"  required /><br>
+            <input type='number' min="1" max="100"  id="cell_y" name="cell_y" class="w3-input w3-border" value="23" required /><br>
         </div>
         <div class="w3-section">
             
             <label for="N">Población por celula: </label>
-            <input type='number'  min="1" max="1000"  id="N" name="N" class="w3-input w3-border"  required /><br>
+            <input type='number'  min="1" max="350000"  id="N" name="N" class="w3-input w3-border" value="250000" required /><br>
         </div>
+        
         <div class="w3-section">
         
             <label for="v">Virulencia : </label>
