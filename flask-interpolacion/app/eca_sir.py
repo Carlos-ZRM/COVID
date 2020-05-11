@@ -92,7 +92,8 @@ class ECA:
         self.total_s = []
         self.total_i = []
         self.total_r = []
-        self.total_a = []
+        self.total_nc = []
+        self.total_nca = []
         
         print("*")
         #self.initializate()
@@ -142,9 +143,6 @@ class ECA:
                             I = 0
                         
                         #S = (N - inf)/N
-
-                        
-
                       
                         self.pob_act[i][j]=[ S , I , 0., N, e ]
                         self.pob_sig[i][j]=[ S , I , 0., N, e ]
@@ -157,7 +155,8 @@ class ECA:
         self.total_s.append(t_s)
         self.total_i.append(0)
         self.total_r.append(0)
-        self.total_a.append(0)
+        self.total_nc.append(0)
+        self.total_nca.append(0)
         
     def initializate (self):
         i = 0 
@@ -174,8 +173,11 @@ class ECA:
         self.total_s.append(t_s)
         self.total_i.append(0)
         self.total_r.append(0)
-        self.total_a.append(0)
-        self.pob_act[i//2][j//2]=[.7,0.3, 0., self.N ]
+        self.total_nc.append(0)
+        self.total_nca.append(0)
+        ii = (self.N-1)/(self.N)
+        print("ii",ii,"1-ii",(1-ii))
+        self.pob_act[i//2][j//2]=[ii ,1-ii, 0., self.N ]
         #self.pob_act[i//4][j//4]=[.7,0.3, 0., self.N ]
     
     def simulacion_flask(self , esc = 4 ):
@@ -217,9 +219,6 @@ class ECA:
             i = i +1
 
         img.putdata(result)
-        #img.show()
-        img.save("nono.png")
-        #return self.pob_act
         return img
 
     
@@ -233,7 +232,8 @@ class ECA:
    
     def evolucion_ti(self):
 
-        i = j = t_s = t_i = t_r = 0
+        i = j = 0
+        t_s = t_i = t_r = t_nc= 0.0
         while i < self.cell_x:
             j = 0
             while j < self.cell_y:
@@ -242,12 +242,13 @@ class ECA:
                     continue
                 N = self.pob_act[i][j][3]
                 S = self.evoluvion_S(i,j)
-                I = self.evolucion_I(i,j)
+                I, NC = self.evolucion_I(i,j)
                 R = self.evolucion_R(i,j)
                 #print(i,j, self.pob_act[i][j], " ** " , S, N)
-                t_s += int(S*N)
-                t_i += int(I*N)
-                t_r += int(R*N)
+                t_s += (S*N)
+                t_i += (I*N)
+                t_r += (R*N)
+                t_nc+= int(NC*N)
                 #print(S,I,R)
                 
                 self.pob_sig[i][j][0]= S
@@ -262,10 +263,15 @@ class ECA:
         aux = self.pob_act
         self.pob_act = self.pob_sig
         self.pob_sig = aux
-        
-        self.total_s.append(t_s)
-        self.total_i.append(t_i)
-        self.total_r.append(t_r)
+        # delta = t1 - t0 + e
+        delta = int(t_i) - int(self.total_i[-1])+int(t_nc)
+        if delta < 0:
+            delta = int(t_nc)
+        self.total_s.append(int(t_s))
+        self.total_i.append(int(t_i))
+        self.total_r.append(int(t_r))
+        self.total_nc.append(delta)
+        self.total_nca.append(delta+self.total_nca[-1])
 
         
 
@@ -291,12 +297,18 @@ class ECA:
         i_0 = (1-self.epsilon)*I 
         i_1 = S*I*self.v
         i_2 = S*suma
+        nuevos = (i_1+i_2)
+        if nuevos < 0:
+            nuevos = 0
         if (i_0+i_1+i_2) < 0:
             print(" I < 0 ",S,I,"--",suma, i_0 , i_1 , i_2)
-            return 0
+            
+            return 0 , nuevos
+        
         if (i_0+i_1+i_2)>1:
-            return 1
-        return i_0+i_1+i_2
+            return 1 , nuevos
+        
+        return i_0+i_1+i_2 ,  nuevos
 
     def evolucion_R (self,i,j):
         I = self.pob_act[i][j][1]
@@ -340,10 +352,17 @@ class ECA:
         
         axis = fig.add_subplot(1, 1, 1)
         if opc==2 :
-            axis.plot(self.total_s , label = "Suceptibles")
-            axis.plot(self.total_r, label = "Recuperados")
-            
-        axis.plot(self.total_i, label = "Infectados")    
+            #axis.plot(self.total_s , label = "Suceptibles")
+            #axis.plot(self.total_r, label = "Recuperados")
+            axis.plot(self.total_nca, label = "Acumulado de casos") 
+        else :
+            axis.plot(self.total_r, label = "Recuperados", dashes=[2, 1,8,2])    
+            axis.plot(self.total_i, label = "Casos activos" )   
+            axis.plot(self.total_nc, label = "Nuevos casos", dashes=[1, 1 ] ) 
+        
+        axis.set_xlabel('Días', fontsize=10)
+        axis.set_ylabel('Número de casos', fontsize='medium')  
+        axis.legend() 
         #axis.plot(self.total_a, label = "Acumulado")
         
         return fig 
@@ -357,8 +376,14 @@ class ECA:
         s = self.total_s[-1]
         i = self.total_i[-1]
         r = self.total_r[-1]
-        print(self.total_i)
-        return s , i , r
+        ac = self.total_nca[-1]
+        nc = self.total_nc[-1]
+        """
+        print("I",self.total_i)
+        print("N",self.total_nc)
+        print("r",self.total_r)
+        """
+        return s , i , r, ac , nc
 if __name__ == "__main__":
     epsilon=.4
     v=.9

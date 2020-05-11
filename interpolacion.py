@@ -4,18 +4,53 @@ import matplotlib.pyplot as plt, mpld3
 import itertools as it
 import math 
 
+class datos:
+    def __init__(self):
+        self.total_nc = []
+        self.total_nca = []
+        self.total_def = []
+        dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Confirmados-act.csv')
+        fila = dataframe.iloc[0]
+        self.total_nc = fila.values.tolist()[3:]
+        self.total_nca = list(it.accumulate(self.total_nc))
+        dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Defunciones-act.csv')
+        fila = dataframe.iloc[0]
+        self.total_def = fila.values.tolist()[3:]
+        
+    def graficas_datos(self, opc =1 , dias=1):
+        if dias  > len(self.total_nc):
+            dias = len(self.total_nc)
+         
+        fig = Figure()
+        axis = fig.add_subplot(1, 1, 1)
+        if opc==2 :
+            #axis.plot(self.total_s , label = "Suceptibles")
+            #axis.plot(self.total_r, label = "Recuperados")
+            axis.plot(self.total_nca, label = "Acumulado de casos") 
+        else :
+            axis.plot(self.total_r, label = "Recuperados", dashes=[2, 1,8,2])    
+            axis.plot(self.total_i, label = "Casos activos" )   
+            axis.plot(self.total_nc, label = "Nuevos casos", dashes=[1, 1 ] ) 
+        
+         
+        
+
+
 class interpolacion :
     
     def __init__(self):
         self.datos = []
         self.datos_inter = []
-        dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Confirmados.csv')
-        dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Defunciones.csv')
+        #dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Confirmados.csv')
+        dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Confirmados-act.csv')
+        #dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Defunciones.csv')
     
         print(dataframe.head(10))
         ser = dataframe.iloc[0]
         self.datos = ser.values.tolist()[3:]
+        self.diarios = self.datos
         self.datos= list(it.accumulate(self.datos))
+        
         print(self.datos, len(self.datos), self.datos[15], self.datos[30])
         #a = list(dataframe[dataframe["nombre"] == "Nacional"])
         #a = dataframe.groupby('FECHA_ACTUALIZACION')['FECHA_INGRESO'].value_counts()
@@ -179,12 +214,16 @@ x = np.arange(0, 60, 1)
 x = x*0.17017
 y = np.exp(x)
 #plt.plot( y , label = "e**(ln8261/53)")
-plt.plot( inter.datos , label = "Muertos covid")
+plt.plot( inter.datos[:58] , label = "acumulado covid")
 x = range(len(inter.datos_inter)) 
-plt.scatter( x , p12, label = "Datos 12 x_i[8,10,12]", s = .8)
-plt.scatter( x , p24, label = "Datos 24 x_i[16,20,24]", s = .8)
-plt.scatter( x , p36, label = "Datos 36 x_i[24,30,36]", s = .8)
+#plt.scatter( x , p12, label = "Datos 12 x_i[8,10,12]", s = .8)
+#plt.scatter( x , p24, label = "Datos 24 x_i[16,20,24]", s = .8)
+#plt.scatter( x , p36, label = "Datos 36 x_i[24,30,36]", s = .8)
 #plt.scatter( x , p48, label = "Datos 48 x_i[32,40,48]", s = .8)
+
+#plt.clf()
+#plt.plot( inter.diarios[:60] , label = "nuevo covid")
+
 plt.ylabel('Individuos')
 plt.xlabel('Días')
 plt.legend()

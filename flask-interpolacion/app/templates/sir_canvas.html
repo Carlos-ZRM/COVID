@@ -11,7 +11,7 @@
 <table class="w3-table w3-striped w3-white">
   <tr>
     <th>Celulas en X</th>
-    <rh>Celuas en Y</rh>
+    <th>Celuas en Y</th>
     <th>Población total</th>
     <th>Virulencia</th>
     <th>Epsilon</th>
@@ -28,41 +28,48 @@
     <td> {{m}} </td>
   </tr>
 </table>
+<h2>SIR</h2>
 <div class="w3-panel">
-  <div class="w3-row-paddi0ng" style="margin:0 -16px">
+  <div class="w3-row-padding" style="margin:0 -16px">
     <div class="w3-third" >
       <h5>Evolución</h5>
-      <img src="/plot_mexico/0" id="myImg" alt="Image Placeholder" height="220">    </div>
-    </div>
-    <div class="w3-third" >
-      <h5> </h5>
+      <img src="/plot_mexico/{{key}}-0" id="myImg" alt="Image Placeholder" height="220">    
     </div>
     <div class="w3-third">
-      <h5>Gráficas</h5>
-      <img src="/plot_mexico_grafica/0" id="myImg2" alt="Image Placeholder" height="220">
+      <h5>Casos activos</h5>
+      <img src="/plot_mexico_grafica/{{key}}-0" id="myImg2" alt="Image Placeholder" height="220">
     </div>
-    
-
+    <div class="w3-third">
+      <h5>Casos acumulados</h5>
+      <img src="/plot_mexico_grafica_ac/{{key}}-0" id="myImg3" alt="Image Placeholder" height="220">
+    </div>
   </div>
 </div>
-
+<h2>Datos COVID</h2>
+<div class="w3-panel">
+  <div class="w3-row-padding" style="margin:0 -16px">
+    <div class="w3-third" >
+      <h5></h5>
+    </div>
+    <div class="w3-third">
+      <h5>Casos activos</h5>
+      <img src="/plot_csv/1-0" id="myImg4" alt="Image Placeholder" height="220">
+    </div>
+    <div class="w3-third">
+      <h5>Casos acumulados</h5>
+      <img src="/plot_csv/2-0" id="myImg5" alt="Image Placeholder" height="220">
+    </div>
+  </div>
+</div>
 <p>Controles</p>
 
 <script type="text/javascript">
   var flag = 0;
   var  step = 0;
+  var key = {{key}} ;
   i = 0;
-  var xmlhttp = new XMLHttpRequest();
-  var url = "/get_datos";
 
-  xmlhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    var myArr = JSON.parse(this.responseText);
-    escribirDatos(myArr);
-  }
-  };
-  xmlhttp.open("GET", url, true);
-  
+    
   function startEvolucion()
   {
     if (flag==0)
@@ -71,9 +78,16 @@
       evolucion= setInterval(function() {
         i = i +1
         let reloadable_item = document.getElementById('myImg');
-        reloadable_item.src = "/plot_mexico/"+i;
+        reloadable_item.src = "/plot_mexico/"+key+"-"+i;
         let reloadable_item2 = document.getElementById('myImg2');
-        reloadable_item2.src = "/plot_mexico_grafica/"+i;
+        reloadable_item2.src = "/plot_mexico_grafica/"+key+"-"+i;
+        let reloadable_item3 = document.getElementById('myImg3');
+        reloadable_item3.src = "/plot_mexico_grafica_ac/"+key+"-"+i;
+        let reloadable_item4 = document.getElementById('myImg4');
+        reloadable_item4.src = "/plot_csv/1-"+i;
+        let reloadable_item5 = document.getElementById('myImg5');
+        reloadable_item5.src = "/plot_csv/2-"+i;
+        
         document.getElementById("step").innerHTML = i+"";
         
 
@@ -87,15 +101,48 @@
     {
       flag = 0;
       clearInterval(evolucion);
+      var xmlhttp = new XMLHttpRequest();
+      var url = "/get_datos/{{key}}-"+i;
+
+      xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          var myArr = JSON.parse(this.responseText);
+        escribirDatos(myArr);
+     }
+  };
+  xmlhttp.open("GET", url, true);
+
       xmlhttp.send();
      }  
+  }
+  function leerDatos()
+  {
+
   }
   function escribirDatos(datos)
   {
     document.getElementById("s").innerHTML = datos.s+"";
     document.getElementById("i").innerHTML = datos.i+"";
     document.getElementById("r").innerHTML = datos.r+"";
-    console.log(datos.i+"")
+  
+    document.getElementById("sir-acum").innerHTML = datos.ac+"";
+    document.getElementById("sir-act").innerHTML = datos.i+"";
+    document.getElementById("sir-nc").innerHTML = datos.nc+"";
+    document.getElementById("sir-rec").innerHTML = datos.r+"";
+
+    document.getElementById("csv-nc").innerHTML = datos.nc_csv+"";
+    document.getElementById("csv-acum").innerHTML = datos.nca_csv+"";
+    document.getElementById("csv-def").innerHTML = datos.defu_csv+"";
+  
+  }
+  function reloadEvolucion(datos)
+  {
+
+    fetch("/clear/{{key}}")
+    .then(respuesta => respuesta.json() )
+    .then(respuesta => console.log(respuesta.name))
+    window.location.reload(true);
+
   }
 
 
@@ -113,7 +160,7 @@
   </script>
   <button class= "w3-button w3-white w3-border w3-border-blue" onclick="startEvolucion()">Start</button>
   <button  class= "w3-button w3-white w3-border w3-border-blue" onclick="stopEvolucion()">Stop</button>
-  <button  class= "w3-button w3-white w3-border w3-border-blue" onclick="window.location.reload()">Reload</button>
+  <button  class= "w3-button w3-white w3-border w3-border-blue" onclick="reloadEvolucion()">Reload</button>
   
   <hr style="width:50px;border:5px solid blueviolet" class="w3-round">
 
@@ -145,7 +192,7 @@
           <h3 id ="i">0</h3>
         </div>
         <div class="w3-clear"></div>
-        <h4>Infectados</h4>
+        <h4>Infectados activos</h4>
       </div>
     </div>
     <div class="w3-quarter">
@@ -159,6 +206,41 @@
       </div>
     </div>
   </div>
+  <div class="w3-responsive w3-card-4">
+    <table class="w3-table w3-striped w3-bordered">
+    <thead>
+    <tr class="w3-theme">
+      <th>Origen</th>
+      <th>Infectados acumulados</th>
+      <th>Infectados activos</th>
+      <th>Nuevos casos</th>
+      <th>Recuperados</th>
+      <th>Defunciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>Modelo SIR</td>
+      <td><p id="sir-acum">0</p></td>
+      <td><p id="sir-act">0</p></td>
+      <td><p id="sir-nc">0</p></td>
+      <td><p id="sir-rec">0</p></td>
+      <td><p>--</p></td>
+    </tr>
+    <tr>
+      <td>Datos gobierno</td>
+      <td><p id="csv-acum">0</p></td>
+      <td><p id="csv-act">--</p></td>
+      <td><p id="csv-nc">0</p></td>
+      <td><p id="csv-rec">--</p></td>
+      <td><p id="csv-def">0</p></td>
+    </tr>
+   
+    
+    </tbody>
+    </table>
+    </div>
+    
 
 
 {% endblock %}

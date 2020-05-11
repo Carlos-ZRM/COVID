@@ -5,6 +5,43 @@ from matplotlib.figure import Figure
 import itertools as it
 import math 
 
+class datos:
+    def __init__(self):
+        self.total_nc = []
+        self.total_nca = []
+        self.total_def = []
+        dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Confirmados-act.csv')
+        fila = dataframe.iloc[0]
+        self.total_nc = fila.values.tolist()[3:]
+        self.total_nca = list(it.accumulate(self.total_nc))
+        dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Defunciones-act.csv')
+        fila = dataframe.iloc[0]
+        self.total_def = fila.values.tolist()[3:]
+        
+    def graficas_datos(self, opc =1 , dias=1):
+        if dias  > len(self.total_nc):
+            dias = len(self.total_nc)
+        
+        fig = Figure()
+        axis = fig.add_subplot(1, 1, 1)
+        if opc==2 :
+            #axis.plot(self.total_s , label = "Suceptibles")
+            #axis.plot(self.total_r, label = "Recuperados")
+            axis.plot(self.total_nca[:dias], label = "Acumulado de casos") 
+        else :
+            axis.plot(self.total_def[:dias], label = "Defunciones", dashes=[2, 1,8,2])    
+            axis.plot(self.total_nc[:dias], label = "Nuevos casos", dashes=[1, 1 ] ) 
+        axis.set_xlabel('Días', fontsize=10)
+        axis.set_ylabel('Número de casos', fontsize='medium')  
+        axis.legend() 
+        return fig 
+    def get_datos(self, dias):
+        if dias  > len(self.total_nc):
+            dias = len(self.total_nc)
+        nc = self.total_nc[dias-1]
+        nca = self.total_nca[dias-1]
+        defu = self.total_def[dias-1]
+        return int(nc), int(nca), int(defu)
 
 class interpolacion :
     
@@ -207,3 +244,9 @@ def flask( numDatos):
     #plt.show()
     return fig        
 #inter.plot()
+"""
+csv = datos()
+nc_csv, nca_csv, defu_csv = csv.get_datos( dias=50)
+print(nc_csv, nca_csv, defu_csv)
+plt.show()
+"""

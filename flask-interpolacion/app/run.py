@@ -7,14 +7,16 @@ from flask_cors import CORS
 import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from interpolacion import flask
+from interpolacion import datos
 from eca_sir import *
 from PIL import Image
 import time
 
 
+global_key = 0
+eca_dic = {}
+csv = False
 
-eca = None
-eca_mexico = None
 app = Flask(__name__ , template_folder='templates')
 app.secret_key = 'app secret key'
 CORS(app)
@@ -49,7 +51,8 @@ def interpolacion_form():
 @app.route("/sir/", methods=["GET", "POST"])
 def sir():
     if request.method == 'POST':
-        global eca
+        global global_key
+        global eca_dic
         cell_x = request.form['cell_x']
         cell_y = request.form['cell_y']
         step = 0
@@ -58,13 +61,16 @@ def sir():
         N = request.form['N']
         m = request.form['m']
         c = request.form['c']
-        print("\n****   +", type(epsilon), epsilon)
-        eca = ECA (int(cell_x), int(cell_y) ,step,True, float(epsilon), float(v), int(N), float(m),float(c) )
-
-        eca.initializate() 
-        poblacion= int(cell_x)*int(cell_y)*int(N)
         
-        return render_template("sir_canvas.html", cell_x=cell_x, cell_y = cell_y , N=N,poblacion=poblacion,v=v, epsilon=epsilon, m=m, c=c )
+        # Se crea el objeto, se guarda en el diccionario y se suma uno
+        eca = ECA (int(cell_x), int(cell_y) ,step,True, float(epsilon), float(v), int(N), float(m),float(c) )
+        eca.initializate() 
+        
+        eca_dic[str(global_key)] = eca
+        print(eca_dic.keys())
+        poblacion= int(cell_x)*int(cell_y)*int(N)
+        global_key +=1
+        return render_template("sir_canvas.html", cell_x=cell_x, cell_y = cell_y , N=N,poblacion=poblacion,v=v, epsilon=epsilon, m=m, c=c, key = global_key-1 )
  
     return render_template("parametros.html")
 
@@ -88,53 +94,14 @@ def sir_mexico():
     return render_template("parametros_mexico.html")
 
 
-@app.route("/evolucion-sir/", methods=["GET", "POST"])
-def sir_evolucion():
-    if request.method == 'GET':
-        #result = eca.simulacion_flask()
-        #render_template("sir_canvas.html", result=result)
-        #step = request.form['step']
-        step = 15
-        """
-        cell_x = request.form['cell_x']
-        print(cell_x)
-        """
-        #return redirect(url_for("sir_evolucion", result=result))
-        """
-        if eca == None :
-            print("evolucion-sir  none")
-            return redirect(url_for("sir"))
-        """
-        return render_template("sir_canvas.html",step=step)
-               
-    return render_template("sir_canvas.html")
 
-
-@app.route("/evolucion-sir-mexico/", methods=["GET", "POST"])
-def sir_evolucion_mexico():
-    if request.method == 'GET':
-        #result = eca.simulacion_flask()
-        #render_template("sir_canvas.html", result=result)
-        #step = request.form['step']
-        step = 15
-        """
-        cell_x = request.form['cell_x']
-        print(cell_x)
-        """
-        #return redirect(url_for("sir_evolucion", result=result))
-        """
-        if eca == None :
-            print("evolucion-sir  none")
-            return redirect(url_for("sir"))
-        """
-        return render_template("sir_canvas.html",step=step)
-
-    return render_template("sir_canvas.html")
-
-         
 
 @app.route('/plot/<imgdata>')
 def plot(imgdata):
+    k = imgdata.index('-')
+    key = imgdata[:k]
+    eca = eca_dic[key]
+
     result = eca.simulacion_flask()
 
     output = io.BytesIO()
@@ -144,7 +111,11 @@ def plot(imgdata):
 
 @app.route('/plot_mexico/<imgdata>')
 def plot_mexico(imgdata):
-    print("")
+    k = imgdata.index('-')
+    
+    key = imgdata[:k]
+    eca = eca_dic[key]    
+
     result = eca.simulacion_flask()
 
     output = io.BytesIO()
@@ -155,7 +126,37 @@ def plot_mexico(imgdata):
 @app.route('/plot_mexico_grafica/<imgdata>')
 def plot_mexico_grafica(imgdata):
     
+    k = imgdata.index('-')
+    key = imgdata[:k]
+    eca = eca_dic[key]
+
     fig = eca.graficas_flask()    
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/plot_mexico_grafica_ac/<imgdata>')
+def plot_mexico_grafica_ac(imgdata):
+    k = imgdata.index('-')
+    key = imgdata[:k]
+    eca = eca_dic[key]
+
+    fig = eca.graficas_flask(opc=2)    
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+@app.route('/plot_csv/<imgdata>')
+def plot_mexico_grafica_csv(imgdata):
+    global csv
+    if csv == False:
+        csv = datos()
+    
+    k = imgdata.index('-')
+    opc = int(imgdata[:k])
+    dias = int(imgdata[k+1:])
+
+    fig = csv.graficas_datos(opc, dias)   
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
@@ -167,14 +168,47 @@ def plot_interpolacion(imgdata):
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
-@app.route('/get_datos')
-def get_datos():
+@app.route('/get_datos/<imgdata>')
+def get_datos(imgdata):
+    global csv
+    if csv == False:
+        csv = datos()
+        
     
-    s,  i , r = eca.get_datos()
+    
+    k = imgdata.index('-')
+    key = imgdata[:k]
+    dias = int (imgdata[k+1:])
+    eca = eca_dic[key]
+    
+    nc_csv, nca_csv, defu_csv = csv.get_datos( dias=dias)
+    s,  i , r, ac, nc = eca.get_datos()
 
-    return jsonify(s=s,i=i,r=r)
+
+    return jsonify(s=s,i=i,r=r,ac = ac, nc = nc, nc_csv= nc_csv , nca_csv=nca_csv, defu_csv = defu_csv)
+
+@app.route('/get_datos_csv/<imgdata>')
+def get_datos_csv(imgdata):
+    global csv
+    if csv == False:
+        csv = datos()
+        
+    dias = int(imgdata)
+    
+    nc, nca, defu = csv.get_datos( dias=dias)
+
+    return jsonify(nc=nc, nca=nca, defu=defu)
+
+@app.route('/clear/<key>')
+def clear(key):
+    global eca_dic
+    if key in eca_dic :
+        del eca_dic[key]
+    return jsonify(res="clear")
+
+
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int("5000"), debug=True)
+    app.run(host="0.0.0.0", port=int("80"), debug=True)
 
 
