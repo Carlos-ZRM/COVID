@@ -348,23 +348,25 @@ class ECA:
         return r
             
     def graficas_flask(self,opc=3):
-        fig = Figure()
+        fig = Figure(figsize=(16.8 , 6.4),  dpi=80)
         
-        axis = fig.add_subplot(1, 1, 1)
-        if opc==2 :
-            #axis.plot(self.total_s , label = "Suceptibles")
-            #axis.plot(self.total_r, label = "Recuperados")
-            axis.plot(self.total_nca, label = "Acumulado de casos") 
-        else :
-            axis.plot(self.total_r, label = "Recuperados", dashes=[2, 1,8,2])    
-            axis.plot(self.total_i, label = "Casos activos" )   
-            axis.plot(self.total_nc, label = "Nuevos casos", dashes=[1, 1 ] ) 
+        axi = fig.add_subplot(1, 2, 1)
+        axi.plot(self.total_r, label = "Recuperados", dashes=[2, 1,8,2])    
+        axi.plot(self.total_i, label = "Casos activos" )   
+        axi.plot(self.total_nc, label = "Nuevos casos", dashes=[1, 1 ] ) 
         
-        axis.set_xlabel('Días', fontsize=10)
+        axi.set_xlabel('Días', fontsize=20)
+        axi.set_ylabel('Número de casos', fontsize='medium')  
+        axi.legend(fontsize=18) 
+        
+        axis = fig.add_subplot(1, 2,2)
+        
+        
+        axis.plot(self.total_nca, label = "Acumulado de casos") 
+        axis.set_xlabel('Días', fontsize=20)
         axis.set_ylabel('Número de casos', fontsize='medium')  
-        axis.legend() 
-        #axis.plot(self.total_a, label = "Acumulado")
-        
+        axis.legend(fontsize=18) 
+
         return fig 
         """
         plt.ylabel('Individuos')

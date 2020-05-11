@@ -17,23 +17,31 @@ class datos:
         dataframe = pd.read_csv('Casos_Diarios_Estado_Nacional_Defunciones-act.csv')
         fila = dataframe.iloc[0]
         self.total_def = fila.values.tolist()[3:]
+        zeros =  len(self.total_nc) - len(self.total_def)
+        zeros = [0]*zeros
+        self.total_def= zeros+self.total_def
+        #print("len",len(self.total_def), len(self.total_nc))
         
     def graficas_datos(self, opc =1 , dias=1):
         if dias  > len(self.total_nc):
             dias = len(self.total_nc)
         
-        fig = Figure()
-        axis = fig.add_subplot(1, 1, 1)
-        if opc==2 :
-            #axis.plot(self.total_s , label = "Suceptibles")
-            #axis.plot(self.total_r, label = "Recuperados")
-            axis.plot(self.total_nca[:dias], label = "Acumulado de casos") 
-        else :
-            axis.plot(self.total_def[:dias], label = "Defunciones", dashes=[2, 1,8,2])    
-            axis.plot(self.total_nc[:dias], label = "Nuevos casos", dashes=[1, 1 ] ) 
-        axis.set_xlabel('Días', fontsize=10)
+        fig = Figure(figsize=(16.8 , 6.4),  dpi=60)
+        axi = fig.add_subplot(1, 2, 1)
+        axi.plot(self.total_def[:dias], label = "Defunciones", dashes=[2, 1,8,2])    
+        axi.plot(self.total_nc[:dias], label = "Nuevos casos", dashes=[1, 1 ] ) 
+        
+        axi.set_xlabel('Días', fontsize=20)
+        axi.set_ylabel('Número de casos', fontsize='medium')  
+        axi.legend(fontsize=18) 
+        
+        axis = fig.add_subplot(1, 2, 2)
+        axis.plot(self.total_nca[:dias], label = "Acumulado de casos") 
+        axis.set_xlabel('Días', fontsize=20)
         axis.set_ylabel('Número de casos', fontsize='medium')  
-        axis.legend() 
+        axis.legend(fontsize=18) 
+        
+
         return fig 
     def get_datos(self, dias):
         if dias  > len(self.total_nc):
@@ -244,9 +252,11 @@ def flask( numDatos):
     #plt.show()
     return fig        
 #inter.plot()
+
 """
 csv = datos()
 nc_csv, nca_csv, defu_csv = csv.get_datos( dias=50)
 print(nc_csv, nca_csv, defu_csv)
 plt.show()
+
 """

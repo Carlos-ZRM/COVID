@@ -33,15 +33,11 @@
   <div class="w3-row-padding" style="margin:0 -16px">
     <div class="w3-third" >
       <h5>Evolución</h5>
-      <img src="/plot_mexico/{{key}}-0" id="myImg" alt="Image Placeholder" height="220">    
+      <img src="/plot_mexico/{{key}}-0" id="myImg" alt="evolucion sir" height="220">    
     </div>
-    <div class="w3-third">
+    <div class="w3-twothird">
       <h5>Casos activos</h5>
-      <img src="/plot_mexico_grafica/{{key}}-0" id="myImg2" alt="Image Placeholder" height="220">
-    </div>
-    <div class="w3-third">
-      <h5>Casos acumulados</h5>
-      <img src="/plot_mexico_grafica_ac/{{key}}-0" id="myImg3" alt="Image Placeholder" height="220">
+      <img src="/plot_mexico_grafica/{{key}}-0" id="myImg2" alt="resultados sir" height="270">
     </div>
   </div>
 </div>
@@ -51,13 +47,9 @@
     <div class="w3-third" >
       <h5></h5>
     </div>
-    <div class="w3-third">
+    <div class="w3-thothird">
       <h5>Casos activos</h5>
-      <img src="/plot_csv/1-0" id="myImg4" alt="Image Placeholder" height="220">
-    </div>
-    <div class="w3-third">
-      <h5>Casos acumulados</h5>
-      <img src="/plot_csv/2-0" id="myImg5" alt="Image Placeholder" height="220">
+      <img src="/plot_csv/1-0" id="myImg3" alt="Image Placeholder" height="270">
     </div>
   </div>
 </div>
@@ -82,17 +74,13 @@
         let reloadable_item2 = document.getElementById('myImg2');
         reloadable_item2.src = "/plot_mexico_grafica/"+key+"-"+i;
         let reloadable_item3 = document.getElementById('myImg3');
-        reloadable_item3.src = "/plot_mexico_grafica_ac/"+key+"-"+i;
-        let reloadable_item4 = document.getElementById('myImg4');
-        reloadable_item4.src = "/plot_csv/1-"+i;
-        let reloadable_item5 = document.getElementById('myImg5');
-        reloadable_item5.src = "/plot_csv/2-"+i;
+        reloadable_item3.src = "/plot_csv/1-"+i;
         
         document.getElementById("step").innerHTML = i+"";
         
 
         console.log("Evolucion "+i);
-      }, 400);
+      }, 600);
     }
   }
   function stopEvolucion()
