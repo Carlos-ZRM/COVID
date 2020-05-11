@@ -1,0 +1,4 @@
+flask
+cython
+numpy
+flask-cors

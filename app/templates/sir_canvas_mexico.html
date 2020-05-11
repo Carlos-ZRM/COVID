@@ -1,0 +1,159 @@
+{% extends "base_template.html" %}
+{% block head %}
+<title>{% block title %} Configuracion inicial {% endblock %} 
+</title>
+{% endblock %}
+
+{% block content %}
+<h1 class="w3-xxxlarge w3-text-blue"><b>Simulación SIR de Covid en el mapa de México.</b></h1>
+<hr style="width:50px;border:5px solid blueviolet" class="w3-round">
+<h2>Datos de la Simulación</h2>
+<table class="w3-table w3-striped w3-white">
+  <tr>
+    <th>Evoluciones</th>
+    <th>Virulencia</th>
+    <th>Epsilon</th>
+    <th>Conectividad</th>
+    <th>M</th>
+  </tr>
+  <tr>
+    <td> {{step}} </td>
+    <td> {{v}} </td>
+    <td> {{epsilon}} </td>
+    <td> {{c}} </td>
+    <td> {{m}} </td>
+  </tr>
+</table>
+<div class="w3-panel">
+  <div class="w3-row-padding" style="margin:0 -16px">
+    <div class="w3-third" >
+      <h5>Evolución</h5>
+      <img src="/plot_mexico/0" id="myImg" alt="Image Placeholder" height="180">    
+    </div>
+
+    <div class="w3-twothird">
+      <h5>Gráficas</h5>
+      <img src="/plot_mexico_grafica/0" id="myImg2" alt="Image Placeholder" height="220">
+    </div>
+
+
+  </div>
+</div>
+
+<p>Graficas</p>
+
+<script type="text/javascript">
+  var flag = 0;
+  var  step = {{step}} ;
+  i = 0;
+  var xmlhttp = new XMLHttpRequest();
+  var url = "/get_datos";
+
+  xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    var myArr = JSON.parse(this.responseText);
+    escribirDatos(myArr);
+  }
+  };
+  xmlhttp.open("GET", url, true);
+  
+  function startEvolucion()
+  {
+    if (flag==0)
+    {
+      flag = 1;  
+      evolucion= setInterval(function() {
+        i = i +1
+        let reloadable_item = document.getElementById('myImg');
+        reloadable_item.src = "/plot_mexico/"+i;
+        let reloadable_item2 = document.getElementById('myImg2');
+        reloadable_item2.src = "/plot_mexico_grafica/"+i;
+        document.getElementById("step").innerHTML = i+"";
+        
+
+        console.log("Evolucion "+i);
+      }, 400);
+    }
+  }
+  function stopEvolucion()
+  {
+    if (flag==1)
+    {
+      flag = 0;
+      clearInterval(evolucion);
+      xmlhttp.send();
+     }  
+  }
+  function escribirDatos(datos)
+  {
+    document.getElementById("s").innerHTML = datos.s+"";
+    document.getElementById("i").innerHTML = datos.i+"";
+    document.getElementById("r").innerHTML = datos.r+"";
+    console.log(datos.i+"")
+  }
+
+
+  //}
+  //var a= 0;
+  //setInterval(function() {
+  
+  //let reloadable_item = document.getElementById('myImg')
+  //	reloadable_item.src += "?var=1"
+  //}, 500);
+  
+  
+  
+  //setInterval(loadDoc,5000);
+  </script>
+  <button class= "w3-button w3-white w3-border w3-border-blue" onclick="startEvolucion()">Start</button>
+  <button  class= "w3-button w3-white w3-border w3-border-blue" onclick="stopEvolucion()">Stop</button>
+  <button  class= "w3-button w3-white w3-border w3-border-blue" onclick="window.location.reload()">Reload</button>
+  
+  <hr style="width:50px;border:5px solid blueviolet" class="w3-round">
+
+  <div class="w3-row-padding w3-margin-bottom">
+    <div class="w3-quarter">
+      <div class="w3-container w3-orange w3-padding-16">
+        <div class="w3-left"><i class="fa fa-eyes w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3 id="step">0</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Evoluciones</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-users w3-green w3-padding-16">
+        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3 id="s">0</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Sanos</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-container w3-red w3-padding-16">
+        <div class="w3-left"><i class="fa fa-share-users w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3 id ="i">0</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Infectados</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-container w3-blue w3-text-white w3-padding-16">
+        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3 id="r">0</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Recuperados</h4>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+

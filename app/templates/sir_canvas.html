@@ -1,0 +1,235 @@
+{% extends "base_template.html" %}
+{% block head %}
+<title>{% block title %} Configuracion inicial {% endblock %} 
+</title>
+{% endblock %}
+
+{% block content %}
+<h1 class="w3-xxxlarge w3-text-blue"><b>Simulación SIR de Covid en el mapa de México.</b></h1>
+<hr style="width:50px;border:5px solid blueviolet" class="w3-round">
+<h2>Datos de la Simulación</h2>
+<table class="w3-table w3-striped w3-white">
+  <tr>
+    <th>Celulas en X</th>
+    <th>Celuas en Y</th>
+    <th>Población total</th>
+    <th>Virulencia</th>
+    <th>Epsilon</th>
+    <th>Conectividad</th>
+    <th>M</th>
+  </tr>
+  <tr>
+    <td> {{cell_x}} </td>
+    <td> {{cell_y}} </td>
+    <td> {{poblacion}} </td>
+    <td> {{v}} </td>
+    <td> {{epsilon}} </td>
+    <td> {{c}} </td>
+    <td> {{m}} </td>
+  </tr>
+</table>
+<h2>SIR</h2>
+<div class="w3-panel">
+  <div class="w3-row-padding" style="margin:0 -16px">
+    <div class="w3-third" >
+      <h5>Evolución</h5>
+      <img src="/plot_mexico/{{key}}-0" id="myImg" alt="evolucion sir" height="220">    
+    </div>
+    <div class="w3-twothird">
+      <h5>Casos activos</h5>
+      <img src="/plot_mexico_grafica/{{key}}-0" id="myImg2" alt="resultados sir" height="270">
+    </div>
+  </div>
+</div>
+<h2>Datos COVID</h2>
+<div class="w3-panel">
+  <div class="w3-row-padding" style="margin:0 -16px">
+    <div class="w3-third" >
+      <h5></h5>
+    </div>
+    <div class="w3-thothird">
+      <h5>Casos activos</h5>
+      <img src="/plot_csv/1-0" id="myImg3" alt="Image Placeholder" height="270">
+    </div>
+  </div>
+</div>
+<p>Controles</p>
+
+<script type="text/javascript">
+  var flag = 0;
+  var  step = 0;
+  var key = {{key}} ;
+  i = 0;
+
+    
+  function startEvolucion()
+  {
+    if (flag==0)
+    {
+      flag = 1;  
+      evolucion= setInterval(function() {
+        i = i +1
+        let reloadable_item = document.getElementById('myImg');
+        reloadable_item.src = "/plot_mexico/"+key+"-"+i;
+        let reloadable_item2 = document.getElementById('myImg2');
+        reloadable_item2.src = "/plot_mexico_grafica/"+key+"-"+i;
+        let reloadable_item3 = document.getElementById('myImg3');
+        reloadable_item3.src = "/plot_csv/1-"+i;
+        
+        document.getElementById("step").innerHTML = i+"";
+        
+
+        console.log("Evolucion "+i);
+      }, 600);
+    }
+  }
+  function stopEvolucion()
+  {
+    if (flag==1)
+    {
+      flag = 0;
+      clearInterval(evolucion);
+      var xmlhttp = new XMLHttpRequest();
+      var url = "/get_datos/{{key}}-"+i;
+
+      xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          var myArr = JSON.parse(this.responseText);
+        escribirDatos(myArr);
+     }
+  };
+  xmlhttp.open("GET", url, true);
+
+      xmlhttp.send();
+     }  
+  }
+  function leerDatos()
+  {
+
+  }
+  function escribirDatos(datos)
+  {
+    document.getElementById("s").innerHTML = datos.s+"";
+    document.getElementById("i").innerHTML = datos.i+"";
+    document.getElementById("r").innerHTML = datos.r+"";
+  
+    document.getElementById("sir-acum").innerHTML = datos.ac+"";
+    document.getElementById("sir-act").innerHTML = datos.i+"";
+    document.getElementById("sir-nc").innerHTML = datos.nc+"";
+    document.getElementById("sir-rec").innerHTML = datos.r+"";
+
+    document.getElementById("csv-nc").innerHTML = datos.nc_csv+"";
+    document.getElementById("csv-acum").innerHTML = datos.nca_csv+"";
+    document.getElementById("csv-def").innerHTML = datos.defu_csv+"";
+  
+  }
+  function reloadEvolucion(datos)
+  {
+
+    fetch("/clear/{{key}}")
+    .then(respuesta => respuesta.json() )
+    .then(respuesta => console.log(respuesta.name))
+    window.location.reload(true);
+
+  }
+
+
+  //}
+  //var a= 0;
+  //setInterval(function() {
+  
+  //let reloadable_item = document.getElementById('myImg')
+  //	reloadable_item.src += "?var=1"
+  //}, 500);
+  
+  
+  
+  //setInterval(loadDoc,5000);
+  </script>
+  <button class= "w3-button w3-white w3-border w3-border-blue" onclick="startEvolucion()">Start</button>
+  <button  class= "w3-button w3-white w3-border w3-border-blue" onclick="stopEvolucion()">Stop</button>
+  <button  class= "w3-button w3-white w3-border w3-border-blue" onclick="reloadEvolucion()">Reload</button>
+  
+  <hr style="width:50px;border:5px solid blueviolet" class="w3-round">
+
+  <div class="w3-row-padding w3-margin-bottom">
+    <div class="w3-quarter">
+      <div class="w3-container w3-orange w3-padding-16">
+        <div class="w3-left"><i class="fa fa-eyes w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3 id="step">0</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Evoluciones</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-users w3-green w3-padding-16">
+        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3 id="s">0</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Sanos</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-container w3-red w3-padding-16">
+        <div class="w3-left"><i class="fa fa-share-users w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3 id ="i">0</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Infectados activos</h4>
+      </div>
+    </div>
+    <div class="w3-quarter">
+      <div class="w3-container w3-blue w3-text-white w3-padding-16">
+        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
+        <div class="w3-right">
+          <h3 id="r">0</h3>
+        </div>
+        <div class="w3-clear"></div>
+        <h4>Recuperados</h4>
+      </div>
+    </div>
+  </div>
+  <div class="w3-responsive w3-card-4">
+    <table class="w3-table w3-striped w3-bordered">
+    <thead>
+    <tr class="w3-theme">
+      <th>Origen</th>
+      <th>Infectados acumulados</th>
+      <th>Infectados activos</th>
+      <th>Nuevos casos</th>
+      <th>Recuperados</th>
+      <th>Defunciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>Modelo SIR</td>
+      <td><p id="sir-acum">0</p></td>
+      <td><p id="sir-act">0</p></td>
+      <td><p id="sir-nc">0</p></td>
+      <td><p id="sir-rec">0</p></td>
+      <td><p>--</p></td>
+    </tr>
+    <tr>
+      <td>Datos gobierno</td>
+      <td><p id="csv-acum">0</p></td>
+      <td><p id="csv-act">--</p></td>
+      <td><p id="csv-nc">0</p></td>
+      <td><p id="csv-rec">--</p></td>
+      <td><p id="csv-def">0</p></td>
+    </tr>
+   
+    
+    </tbody>
+    </table>
+    </div>
+    
+
+
+{% endblock %}
+
