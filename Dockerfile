@@ -8,6 +8,6 @@ RUN pip install  --no-cache-dir pandas
 RUN pip install  --no-cache-dir cython
 RUN pip install --no-cache-dir matplotlib 
 RUN pip install  --no-cache-dir Pillow
-COPY ../app /app
+COPY ./app/ /app
 WORKDIR /app
 CMD python3 run.py
