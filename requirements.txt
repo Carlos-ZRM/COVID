@@ -3,4 +3,4 @@ flask-cors==3.0.8
 matplotlib==3.2.1
 pandas==1.0.3
 numpy==1.18.4
-pillow==7.1.2
+pillow==9.3.0
